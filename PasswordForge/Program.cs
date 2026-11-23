@@ -1,48 +1,44 @@
-﻿using System.Security.Cryptography;
+﻿using PasswordForge.Services;
+using PasswordForge.Utils;
 
-namespace PasswordForge;
-
-class Program
+while (true)
 {
-    static void Main(string[] args)
+    Console.Clear();
+
+    Console.WriteLine("==========");
+    Console.WriteLine("PasswordForge");
+    Console.WriteLine("==========");
+    Console.WriteLine();
+
+    var options = ConsoleHelper.ReadOptions();
+
+    if (!options.UseLowercase &&
+        !options.UseUppercase &&
+        !options.UseNumbers &&
+        !options.UseSpecialCharacters)
     {
-        int? length = ReadPasswordLength();
-        if (length.HasValue)
-        {
-            Console.WriteLine($"Password: {GeneratePassword(length.Value)}");
-        }
+        Console.WriteLine();
+        Console.WriteLine("You must select at least one character type.");
+
+        Console.ReadKey();
+        continue;
     }
 
-    static int? ReadPasswordLength()
-    {
-        while (true)
-        {
-            Console.Write("Enter a password length (1-1024): ");
-            string? input = Console.ReadLine();
-            if (input == null)
-            {
-                return null;
-            }
+    Console.WriteLine();
 
-            if (int.TryParse(input, out int length) && length >= 1 && length <= 1024)
-            {
-                return length;
-            }
+    string password =
+        PasswordGenerator.Generate(options);
 
-            Console.WriteLine("Please enter a whole number between 1 and 1024.");
-        }
-    }
+    string strength =
+        PasswordStrengthChecker.GetStrength(password);
 
-    static string GeneratePassword(int length)
-    {
-        const string characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_=+";
-        char[] password = new char[length];
+    Console.WriteLine($"Password: {password}");
 
-        for (int i = 0; i < password.Length; i++)
-        {
-            password[i] = characters[RandomNumberGenerator.GetInt32(characters.Length)];
-        }
+    Console.WriteLine($"Strength: {strength}");
 
-        return new string(password);
-    }
+    Console.WriteLine();
+    Console.Write("Generate another password? (y/n): ");
+
+    if (Console.ReadLine()?.ToLower() != "y")
+        break;
 }
