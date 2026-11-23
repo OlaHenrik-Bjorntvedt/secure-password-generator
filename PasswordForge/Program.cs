@@ -1,8 +1,46 @@
 ﻿using System;
 using System.Threading;
 
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using PasswordForge.Services;
 using PasswordForge.Utils;
+
+if (args.Contains("--web"))
+{
+    var builder = WebApplication.CreateBuilder(
+        args.Where(argument => argument != "--web").ToArray());
+    var app = builder.Build();
+
+    app.UseDefaultFiles();
+    app.UseStaticFiles();
+
+    app.MapPost("/api/passwords", (PasswordForge.Models.PasswordOptions? options) =>
+    {
+        if (options is null)
+            return Results.BadRequest(new { error = "Password options are required." });
+
+        if (options.Length is < 1 or > 128)
+            return Results.BadRequest(new { error = "Password length must be between 1 and 128." });
+
+        if (!options.UseLowercase &&
+            !options.UseUppercase &&
+            !options.UseNumbers &&
+            !options.UseSpecialCharacters)
+        {
+            return Results.BadRequest(new { error = "Select at least one character type." });
+        }
+
+        string password = PasswordGenerator.Generate(options);
+        string strength = PasswordStrengthChecker.GetStrength(password);
+
+        return Results.Ok(new { password, strength });
+    });
+
+    await app.RunAsync();
+    return;
+}
 
 
 

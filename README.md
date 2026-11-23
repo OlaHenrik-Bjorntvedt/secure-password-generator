@@ -16,6 +16,7 @@ PasswordForge allows you to generate strong, customizable passwords using crypto
 - Password strength assessment
 - Cryptographically secure password generation
 - Generate multiple passwords without restarting the application
+- Vue web interface served by the C# application
 - Clean and beginner-friendly code structure
 
 ---
@@ -181,6 +182,29 @@ dotnet run
 ```
 
 The application will build automatically and start in the terminal.
+
+### Run the web interface
+
+Start the ASP.NET Core API and Vue interface:
+
+```bash
+dotnet run --project PasswordForge -- --web
+```
+
+Run this command from the repository folder (or use `dotnet run -- --web` from
+inside the `PasswordForge` project folder). Open the URL printed in the terminal
+(usually `http://localhost:5000`). Do not use VS Code Live Server or open
+`index.html` directly: these can preview the page, but cannot run the C# API
+needed to generate passwords.
+
+The web interface uses the same secure C# password
+generator and strength checker as the CLI. Vue is loaded from a CDN, so the
+browser needs an internet connection to load the interface.
+
+`PasswordForge/wwwroot` is ASP.NET Core's conventional public web folder.
+The app serves its HTML, CSS, and JavaScript from that folder; the C# source
+files remain outside it. A separate frontend project is not needed for this
+Vue setup.
 
 ---
 
