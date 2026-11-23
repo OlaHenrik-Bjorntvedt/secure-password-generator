@@ -8,6 +8,8 @@ PasswordForge allows you to generate strong, customizable passwords using crypto
 
 ## ✨ Features
 
+- Start menu: view saved passwords, generate a new password, or test a password
+- Centered layout with arrow-key navigation (↑/↓, Enter, Esc) and a consistent color theme
 - Custom password length
 - Lowercase letters (a-z)
 - Uppercase letters (A-Z)
@@ -15,6 +17,8 @@ PasswordForge allows you to generate strong, customizable passwords using crypto
 - Special characters (!@#$%^&*)
 - Password strength assessment
 - Cryptographically secure password generation
+- Save generated passwords in an encrypted vault (Windows DPAPI)
+- Test any password's strength with hidden input
 - Generate multiple passwords without restarting the application
 - Vue web interface served by the C# application
 - Clean and beginner-friendly code structure
@@ -24,23 +28,34 @@ PasswordForge allows you to generate strong, customizable passwords using crypto
 ## 📷 Example
 
 ```text
-==========
-PasswordForge
-==========
+                 PASSWORDFORGE v1.0
 
-Password length: 16
+             View saved passwords
+          ▸  Generate a new password
+             Test a password
+             Exit
 
-Use lowercase letters (y/n): y
-Use uppercase letters (y/n): y
-Use numbers (y/n): y
-Use special characters (y/n): y
+         ↑/↓ Move   Enter Select   Esc Exit
 
-Password:
-K@8sLm#2Qa!9Xp$T
+Password length (1-128): 16
 
-Strength:
-Strong
+Use lowercase letters (Enter = yes, n = no):
+Use uppercase letters (Enter = yes, n = no):
+Use numbers (Enter = yes, n = no):
+Use special characters (Enter = yes, n = no): n
+
+Password: K@8sLm#2Qa!9Xp$T
+Strength: Strong
+
+          ▸  Save password
+             Generate another
+             Back to main menu
+
+Name (e.g. Email, Netflix): Email
+Saved "Email".
 ```
+
+Press **Esc** at any prompt to go back to the main menu.
 
 ---
 
@@ -52,14 +67,18 @@ PasswordForge
 ├── Program.cs
 │
 ├── Models
-│   └── PasswordOptions.cs
+│   ├── PasswordOptions.cs
+│   └── SavedPassword.cs
 │
 ├── Services
 │   ├── PasswordGenerator.cs
-│   └── PasswordStrengthChecker.cs
+│   ├── PasswordStrengthChecker.cs
+│   └── PasswordVault.cs
 │
 ├── Utils
-│   └── ConsoleHelper.cs
+│   ├── ConsoleHelper.cs
+│   ├── ConsoleMenu.cs
+│   └── Theme.cs
 │
 └── README.md
 ```
@@ -70,10 +89,10 @@ Application entry point.
 
 Responsibilities:
 
-- Main program loop
+- Start menu loop
 - User interaction
 - Calling services
-- Displaying generated passwords
+- Displaying, saving and testing passwords
 
 ### Models
 
@@ -88,6 +107,10 @@ Stores user-selected password settings:
 - Uppercase letters
 - Numbers
 - Special characters
+
+#### SavedPassword.cs
+
+A saved vault entry: name, password and the date it was saved.
 
 ### Services
 
@@ -113,6 +136,14 @@ Responsible for:
   - Medium
   - Strong
 
+#### PasswordVault.cs
+
+Responsible for:
+
+- Loading and saving passwords to `%LOCALAPPDATA%\PasswordForge\vault.dat`
+- Encrypting the vault with Windows DPAPI (`ProtectedData`), so only your
+  Windows user account can read it
+
 ### Utils
 
 Contains helper methods.
@@ -124,6 +155,16 @@ Responsible for:
 - Reading user input
 - Validation
 - User prompts
+- Centering text in the console window
+
+#### ConsoleMenu.cs
+
+Arrow-key menu (↑/↓, Home/End, Enter, Esc). Falls back to a numbered list when
+input is redirected.
+
+#### Theme.cs
+
+The shared color palette, so every screen uses the same colors.
 
 ---
 
