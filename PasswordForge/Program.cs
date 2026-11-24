@@ -229,9 +229,9 @@ void CreatePassword()
             ConsoleHelper.WriteCentered("╔══════════════════════════════════════╗", Theme.Primary);
             ConsoleHelper.WriteCentered("║        ⚒ PASSWORD FORGED ⚒         ║", Theme.Muted);
             ConsoleHelper.WriteCentered("╔════════════════════════════════════════════════════════════════════════════╗", Theme.Primary);
-            ConsoleHelper.WriteCentered("║                                      ╝╚                                   ║", Theme.Muted);
+            ConsoleHelper.WriteCentered("║                                      ╝╚                                  ║", Theme.Muted);
             ConsoleHelper.WriteCentered($" {password.PadRight(34)} ", Theme.Success);                                
-            ConsoleHelper.WriteCentered("║                                      ╗╔                                   ║", Theme.Muted);
+            ConsoleHelper.WriteCentered("║                                      ╗╔                                  ║", Theme.Muted);
             ConsoleHelper.WriteCentered("╚════════════════════════════════════════════════════════════════════════════╝", Theme.Primary);
 
             ConsoleHelper.WriteStrength(PasswordStrengthChecker.GetStrength(password));
